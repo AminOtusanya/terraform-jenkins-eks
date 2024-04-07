@@ -13,7 +13,7 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-variable "role_name" {
+variable "aws_iam_user" {
   description = "Role name to attach"
   type        = string
 }

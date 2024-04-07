@@ -55,19 +55,38 @@ module "eks" {
     }
   }
 
+  access_entries = {
+    jenkins-eks-terraform = {
+      principal_arn    = data.aws_iam_user.existing_user.arn
+      kubernetes_group = []
+      type             = "STANDARD"
+
+      policy_association = {
+        admin = {
+
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          type       = "cluster"
+          namespace  = []
+
+        }
+      }
+    }
+  }
+
+
   tags = {
     Environment = "dev"
     Terraform   = "true"
   }
 }
 
-resource "aws_iam_role_policy_attachment" "eks-admin-policy-attach" {
-  role       = data.aws_iam_instance_profile.existing_role.name
-  policy_arn = data.aws_iam_policy.AmazonEKSAdminPolicy.arn
-}
+#resource "aws_iam_user_policy_attachment" "eks-admin-policy-attach" {
+# user       = data.aws_iam_user.existing_user.user_name
+#policy_arn = data.aws_iam_policy.AmazonEKSAdminPolicy.arn
+#}
 
-resource "aws_eks_access_entry" "access_entry" {
-  cluster_name  = "my-eks-cluster"
-  principal_arn = data.aws_iam_instance_profile.existing_role.arn
-  type          = "STANDARD"
-}
+#resource "aws_eks_access_entry" "access_entry" {
+# cluster_name  = "my-eks-cluster"
+#principal_arn = data.aws_iam_user.existing_user.arn
+#type          = "STANDARD"
+#}
