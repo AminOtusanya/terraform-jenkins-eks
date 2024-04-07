@@ -11,6 +11,9 @@ sudo amazon-linux-extras install java-openjdk11 -y
 sudo yum install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
+sudo adduser jenkins
+sudo echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jenkins
+
 
 # then install git
 sudo yum install git -y

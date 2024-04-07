@@ -13,3 +13,7 @@ variable "private_subnets" {
   type        = list(string)
 }
 
+variable "role_name" {
+  description = "Role name to attach"
+  type        = string
+}

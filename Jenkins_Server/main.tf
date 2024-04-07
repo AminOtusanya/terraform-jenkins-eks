@@ -69,6 +69,22 @@ module "sg" {
   }
 }
 
+resource "aws_key_pair" "jenkins-server-key" {
+  key_name   = "jenkins-server-key"
+  public_key = tls_private_key.rsa.public_key_openssh
+}
+
+resource "tls_private_key" "rsa" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+
+}
+
+resource "local_file" "TF-key" {
+  content  = tls_private_key.rsa.private_key_pem
+  filename = "jenkins-server-key"
+
+}
 
 #EC2
 module "ec2_instance" {
@@ -77,13 +93,14 @@ module "ec2_instance" {
   name = "jenkins-server"
 
   instance_type               = var.instance_type
-  key_name                    = "Jenkins-server-key"
+  key_name                    = "jenkins-server-key"
   monitoring                  = true
   vpc_security_group_ids      = [module.sg.security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   user_data                   = file("jenkins-install.sh")
   availability_zone           = data.aws_availability_zones.azs.names[0]
+  iam_instance_profile        = aws_iam_instance_profile.jenkins_ec2_profile.name
 
   tags = {
     Name        = "jenkins-server"
