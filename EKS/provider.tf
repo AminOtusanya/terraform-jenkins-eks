@@ -9,5 +9,6 @@ terraform {
 
 provider "aws" {
   region = "us-west-1"
+  profile = "jenkins-eks-tf"
 
 }
